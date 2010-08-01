@@ -59,6 +59,15 @@
    }
 }
 
+- (NSData *)dataWithURL:(NSURL *)url
+{
+   NSString *key = [url absoluteString];
+   KTFileCache *cache = [KTFileCache sharedKTFileCache];
+   NSData *data = [cache dataWithKey:key];
+   
+   return data;
+}
+
 
 #pragma mark -
 #pragma mark Delegate broadcast helpers
@@ -79,7 +88,7 @@
 
 
 #pragma mark -
-#pragma mark TSDownlaoder Callbacks.
+#pragma mark KTDownloaderDelegate Methods
 
 - (void)downloader:(KTDownloader *)downloader didFinishWithData:(NSData *)data;
 {
@@ -128,13 +137,5 @@
    [downloader release];
 }
 
-- (NSData *)dataWithURL:(NSURL *)url
-{
-   NSString *key = [url absoluteString];
-   KTFileCache *cache = [KTFileCache sharedKTFileCache];
-   NSData *data = [cache dataWithKey:key];
-   
-   return data;
-}
 
 @end

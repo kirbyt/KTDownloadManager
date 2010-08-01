@@ -40,6 +40,7 @@
 		6817504A1205171800DAED22 /* KTDownloadManagerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KTDownloadManagerDelegate.h; sourceTree = "<group>"; };
 		6817504B1205171800DAED22 /* KTFileCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KTFileCache.h; sourceTree = "<group>"; };
 		6817504C1205171800DAED22 /* KTFileCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KTFileCache.m; sourceTree = "<group>"; };
+		68175075120526E100DAED22 /* KTDownloaderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KTDownloaderDelegate.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Sample-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Sample-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -131,6 +132,7 @@
 			children = (
 				681750461205171800DAED22 /* KTDownloader.h */,
 				681750471205171800DAED22 /* KTDownloader.m */,
+				68175075120526E100DAED22 /* KTDownloaderDelegate.h */,
 				681750481205171800DAED22 /* KTDownloadManager.h */,
 				681750491205171800DAED22 /* KTDownloadManager.m */,
 				6817504A1205171800DAED22 /* KTDownloadManagerDelegate.h */,

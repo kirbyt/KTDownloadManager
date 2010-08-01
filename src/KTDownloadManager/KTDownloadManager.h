@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "KTDownloaderDelegate.h"
 #import "KTDownloadManagerDelegate.h"
 
 enum {
@@ -18,7 +19,7 @@ typedef NSUInteger KTDownloadManagerCaching;
 
 @class KTDownloader;
 
-@interface KTDownloadManager : NSObject {
+@interface KTDownloadManager : NSObject <KTDownloaderDelegate> {
    id<KTDownloadManagerDelegate> downloadManagerDelegate_;
 @private
    NSMutableSet *downloaderTable_;
@@ -27,8 +28,6 @@ typedef NSUInteger KTDownloadManagerCaching;
 @property (nonatomic, assign) id<KTDownloadManagerDelegate> delegate;
 
 - (void)downloadDataWithURL:(NSURL *)url tag:(NSInteger)tag caching:(KTDownloadManagerCaching)caching;
-- (void)downloader:(KTDownloader *)downloader didFinishWithData:(NSData *)data;
-- (void)downloader:(KTDownloader *)downloader didFailWithError:(NSError *)error;
 
 /**
  * Returns the data downloaded from the URL. This should ONLY be called
