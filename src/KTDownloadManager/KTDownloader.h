@@ -28,7 +28,7 @@ enum {
 @property (nonatomic, assign) NSInteger tag;
 @property (nonatomic, assign) KTDownloadManagerCaching caching;
 
-+ (KTDownloader *)newDownloaderWithURL:(NSURL *)url tag:(NSInteger)tag downloadManager:(KTDownloadManager *)downloadManager;
++ (KTDownloader *)newDownloaderWithURL:(NSURL *)url tag:(NSInteger)tag caching:(KTDownloadManagerCaching)caching downloadManager:(KTDownloadManager *)downloadManager;
 
 - (void)start;
 

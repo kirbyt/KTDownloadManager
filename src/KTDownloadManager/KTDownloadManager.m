@@ -42,17 +42,29 @@
    NSString *key = [url absoluteString];
    
    KTFileCache *cache = [KTFileCache sharedKTFileCache];
-   NSURL *fileURL = [cache fileURLWithKey:key];
-   NSData *data = [cache dataWithKey:key];
+   NSURL *fileURL = nil;
+   NSData *data = nil;
+   
+   // Retrieve the file URL from the cache.
+   fileURL = [cache fileURLWithKey:key];
+   
+   // If the memory cache is requested then 
+   // check for the data in memory. Note this
+   // will auto-load the data into memory if
+   // the data is stored on the file system.
+   if ((caching & KTDownloadManagerCachingMemory) == KTDownloadManagerCachingMemory) {
+      data = [cache dataWithKey:key];
+   } 
 
-   if ((caching && KTDownloadManagerCachingMemory) == KTDownloadManagerCachingMemory && data) {
+   if ((caching & KTDownloadManagerCachingMemory) == KTDownloadManagerCachingMemory && data) {
       // No need to download. We have the data cached in memory.
       [self broadcastDidFinishWithData:data tag:tag];
-   } else if ((caching && KTDownloadManagerCachingFileSystem) == KTDownloadManagerCachingFileSystem && fileURL) {
+   } else if ((caching & KTDownloadManagerCachingFileSystem) == KTDownloadManagerCachingFileSystem && fileURL) {
       [self broadcastDidFinishWithFileURL:fileURL tag:tag];
    } else {
       KTDownloader *downloader = [KTDownloader newDownloaderWithURL:url
                                                                 tag:tag
+                                                            caching:caching
                                                     downloadManager:self];
       [downloaderTable_ addObject:downloader];
       [downloader start];

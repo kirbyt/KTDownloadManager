@@ -33,11 +33,13 @@
 
 + (KTDownloader *)newDownloaderWithURL:(NSURL *)url 
                                    tag:(NSInteger)tag 
+                               caching:(KTDownloadManagerCaching)caching
                        downloadManager:(KTDownloadManager *)downloadManager
 {
    KTDownloader *downloader = [[KTDownloader alloc] init];
    [downloader setUrl:url];
    [downloader setTag:tag];
+   [downloader setCaching:caching];
    [downloader setDownloadManager:downloadManager];
    return downloader;
 }
