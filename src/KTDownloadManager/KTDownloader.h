@@ -18,7 +18,7 @@ enum {
 @interface KTDownloader : NSObject {
    NSURL *url_;
    NSInteger tag_;
-   KTDownloadManagerCaching caching_;
+   KTDownloadManagerResponseType responseType_;
 @private
    KTDownloadManager *downloadManager_;
    NSMutableData *receivedData_;
@@ -26,9 +26,12 @@ enum {
 
 @property (nonatomic, retain) NSURL *url;
 @property (nonatomic, assign) NSInteger tag;
-@property (nonatomic, assign) KTDownloadManagerCaching caching;
+@property (nonatomic, assign) KTDownloadManagerResponseType responseType;
 
-+ (KTDownloader *)newDownloaderWithURL:(NSURL *)url tag:(NSInteger)tag caching:(KTDownloadManagerCaching)caching downloadManager:(KTDownloadManager *)downloadManager;
++ (KTDownloader *)newDownloaderWithURL:(NSURL *)url 
+                                   tag:(NSInteger)tag 
+                          responseType:(KTDownloadManagerResponseType)respType 
+                       downloadManager:(KTDownloadManager *)downloadManager;
 
 - (void)start;
 

@@ -10,12 +10,16 @@
 #import "KTDownloaderDelegate.h"
 #import "KTDownloadManagerDelegate.h"
 
+extern NSString * const ktDownloadManagerResponseKeyData;
+extern NSString * const ktDownloadManagerResponseKeyFileURL;
+
+
 enum {
-   KTDownloadManagerCachingNone             = 0,
-   KTDownloadManagerCachingMemory           = 1 << 0,
-   KTDownloadManagerCachingFileSystem       = 1 << 1
+   KTDownloadManagerResponseTypeNone      = 0,
+   KTDownloadManagerResponseTypeData      = 1 << 0,
+   KTDownloadManagerResponseTypeFileURL   = 1 << 1
 };
-typedef NSUInteger KTDownloadManagerCaching;
+typedef NSUInteger KTDownloadManagerResponseType;
 
 @class KTDownloader;
 
@@ -27,7 +31,7 @@ typedef NSUInteger KTDownloadManagerCaching;
 
 @property (nonatomic, assign) id<KTDownloadManagerDelegate> delegate;
 
-- (void)downloadDataWithURL:(NSURL *)url tag:(NSInteger)tag caching:(KTDownloadManagerCaching)caching;
+- (void)downloadDataWithURL:(NSURL *)url tag:(NSInteger)tag responseType:(KTDownloadManagerResponseType)respType;
 
 /**
  * Returns the data downloaded from the URL. This should ONLY be called

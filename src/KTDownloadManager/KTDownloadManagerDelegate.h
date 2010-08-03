@@ -13,8 +13,7 @@
 @protocol KTDownloadManagerDelegate <NSObject>
 
 @optional
-- (void)downloadManagerDidFinishWithFileURL:(NSURL *)fileURL tag:(NSInteger)tag;
-- (void)downloadManagerDidFinishWithData:(NSData *)data tag:(NSInteger)tag;
+- (void)downloadManagerDidFinishWithResponseData:(NSDictionary *)respData tag:(NSInteger)tag;
 - (void)downloadManagerDidFailWithError:(NSError *)error;
 
 @end

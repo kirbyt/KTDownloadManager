@@ -21,7 +21,7 @@
 @synthesize downloadManager = downloadManager_;
 @synthesize receivedData = receivedData_;
 @synthesize tag = tag_;
-@synthesize caching = caching_;
+@synthesize responseType = responseType_;
 
 - (void)dealloc 
 {
@@ -33,13 +33,13 @@
 
 + (KTDownloader *)newDownloaderWithURL:(NSURL *)url 
                                    tag:(NSInteger)tag 
-                               caching:(KTDownloadManagerCaching)caching
+                          responseType:(KTDownloadManagerResponseType)respType
                        downloadManager:(KTDownloadManager *)downloadManager
 {
    KTDownloader *downloader = [[KTDownloader alloc] init];
    [downloader setUrl:url];
    [downloader setTag:tag];
-   [downloader setCaching:caching];
+   [downloader setResponseType:respType];
    [downloader setDownloadManager:downloadManager];
    return downloader;
 }

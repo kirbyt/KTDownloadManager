@@ -10,9 +10,13 @@
 #import "KTDownloader.h"
 #import "KTFileCache.h"
 
+
+NSString * const ktDownloadManagerResponseKeyData = @"KTDownloadManager.data";
+NSString * const ktDownloadManagerResponseKeyFileURL = @"KTDownloadManager.fileURL";
+
+
 @interface KTDownloadManager (KTPrivateMethods)
-- (void)broadcastDidFinishWithFileURL:(NSURL *)fileURL tag:(NSInteger)tag;
-- (void)broadcastDidFinishWithData:(NSData *)data tag:(NSInteger)tag;
+- (void)broadcastDidFinishWithResponseData:(NSDictionary *)respData tag:(NSInteger)tag;
 @end
 
 @implementation KTDownloadManager
@@ -37,34 +41,41 @@
 
 - (void)downloadDataWithURL:(NSURL *)url 
                         tag:(NSInteger)tag 
-                    caching:(KTDownloadManagerCaching)caching;
+               responseType:(KTDownloadManagerResponseType)respType;
 {
    NSString *key = [url absoluteString];
    
    KTFileCache *cache = [KTFileCache sharedKTFileCache];
+   NSMutableDictionary *responseData = [[NSMutableDictionary alloc] init];
    NSURL *fileURL = nil;
    NSData *data = nil;
    
    // Retrieve the file URL from the cache.
-   fileURL = [cache fileURLWithKey:key];
-   
-   // If the memory cache is requested then 
-   // check for the data in memory. Note this
-   // will auto-load the data into memory if
-   // the data is stored on the file system.
-   if ((caching & KTDownloadManagerCachingMemory) == KTDownloadManagerCachingMemory) {
+   if ((respType & KTDownloadManagerResponseTypeFileURL) == KTDownloadManagerResponseTypeFileURL) {
+      fileURL = [cache fileURLWithKey:key];
+      if (fileURL) {
+         [responseData setObject:fileURL forKey:ktDownloadManagerResponseKeyFileURL];
+      }
+   }
+
+   // If the response type includes data then
+   // retrieve data from the cache.
+   if ((respType & KTDownloadManagerResponseTypeData) == KTDownloadManagerResponseTypeData) {
       data = [cache dataWithKey:key];
+      if (data) {
+         [responseData setObject:data forKey:ktDownloadManagerResponseKeyData];
+      }
    } 
 
-   if ((caching & KTDownloadManagerCachingMemory) == KTDownloadManagerCachingMemory && data) {
+   if ((respType & KTDownloadManagerResponseTypeData) == KTDownloadManagerResponseTypeData && data) {
       // No need to download. We have the data cached in memory.
-      [self broadcastDidFinishWithData:data tag:tag];
-   } else if ((caching & KTDownloadManagerCachingFileSystem) == KTDownloadManagerCachingFileSystem && fileURL) {
-      [self broadcastDidFinishWithFileURL:fileURL tag:tag];
+      [self broadcastDidFinishWithResponseData:responseData tag:tag];
+   } else if ((respType & KTDownloadManagerResponseTypeFileURL) == KTDownloadManagerResponseTypeFileURL && fileURL) {
+      [self broadcastDidFinishWithResponseData:responseData tag:tag];
    } else {
       KTDownloader *downloader = [KTDownloader newDownloaderWithURL:url
                                                                 tag:tag
-                                                            caching:caching
+                                                       responseType:respType
                                                     downloadManager:self];
       [downloaderTable_ addObject:downloader];
       [downloader start];
@@ -84,17 +95,10 @@
 #pragma mark -
 #pragma mark Delegate broadcast helpers
 
-- (void)broadcastDidFinishWithFileURL:(NSURL *)fileURL tag:(NSInteger)tag
+- (void)broadcastDidFinishWithResponseData:(NSDictionary *)respData tag:(NSInteger)tag
 {
-   if (downloadManagerDelegate_ && [downloadManagerDelegate_ respondsToSelector:@selector(downloadManagerDidFinishWithFileURL:tag:)]) {
-      [downloadManagerDelegate_ downloadManagerDidFinishWithFileURL:fileURL tag:tag];
-   }
-}
-
-- (void)broadcastDidFinishWithData:(NSData *)data tag:(NSInteger)tag
-{
-   if (downloadManagerDelegate_ && [downloadManagerDelegate_ respondsToSelector:@selector(downloadManagerDidFinishWithData:tag:)]) {
-      [downloadManagerDelegate_ downloadManagerDidFinishWithData:data tag:tag];
+   if (downloadManagerDelegate_ && [downloadManagerDelegate_ respondsToSelector:@selector(downloadManagerDidFinishWithResponseData:tag:)]) {
+      [downloadManagerDelegate_ downloadManagerDidFinishWithResponseData:respData tag:tag];
    }
 }
 
@@ -106,36 +110,38 @@
 {
    NSString *key = [[downloader url] absoluteString];
    NSInteger tag = [downloader tag];
-   KTDownloadManagerCaching caching = [downloader caching];
+   KTDownloadManagerResponseType respType = [downloader responseType];
+   NSURL *fileURL = nil;
+   
+   NSMutableDictionary *responseData = [[NSMutableDictionary alloc] init];
+   
+   // Prepare cache.
+   BOOL cacheToDisk = NO;
+   BOOL cacheToMemory = NO;
+   cacheToMemory = ((respType & KTDownloadManagerResponseTypeData) == KTDownloadManagerResponseTypeData);
+   cacheToDisk =  ((respType & KTDownloadManagerResponseTypeFileURL) == KTDownloadManagerResponseTypeFileURL);
 
-   data = [data retain];   // Thread runloop safety.
+   // Cache data.
+   if (respType != KTDownloadManagerResponseTypeNone) {
+      KTFileCache *cache = [KTFileCache sharedKTFileCache];
+      [cache storeData:data forKey:key toDisk:cacheToDisk toMemory:cacheToMemory];
+      fileURL = [cache fileURLWithKey:key];
+   }
+
+   // Prepare responseData.
+   if ((respType & KTDownloadManagerResponseTypeData) == KTDownloadManagerResponseTypeData) {
+      [responseData setObject:data forKey:ktDownloadManagerResponseKeyData];
+   }
+   if ((respType & KTDownloadManagerResponseTypeFileURL) == KTDownloadManagerResponseTypeFileURL) {
+      [responseData setObject:fileURL forKey:ktDownloadManagerResponseKeyFileURL];
+   }
    
    // Release the downloader.
    [downloaderTable_ removeObject:downloader];
    [downloader release];
-   
-   // Cache the downloaded data.
-   BOOL cacheToDisk = NO;
-   BOOL cacheToMemory = NO;
-   if ((caching & KTDownloadManagerCachingMemory) == KTDownloadManagerCachingMemory) {
-      cacheToMemory = YES;
-   }
-   if ((caching & KTDownloadManagerCachingFileSystem) == KTDownloadManagerCachingFileSystem) {
-      cacheToDisk = YES;
-   }
-   
-   if (caching != KTDownloadManagerCachingNone) {
-      KTFileCache *cache = [KTFileCache sharedKTFileCache];
-      [cache storeData:data forKey:key toDisk:cacheToDisk toMemory:cacheToMemory];
-   }
-   
-   if (caching == KTDownloadManagerCachingNone || cacheToMemory) {
-      [self broadcastDidFinishWithData:data tag:tag];
-   } else if (cacheToDisk) {
-      KTFileCache *cache = [KTFileCache sharedKTFileCache];
-      NSURL *fileURL = [cache fileURLWithKey:key];
-      [self broadcastDidFinishWithFileURL:fileURL tag:tag];
-   }
+
+   // Return the response data to the caller.
+   [self broadcastDidFinishWithResponseData:responseData tag:tag];
 }
 
 - (void)downloader:(KTDownloader *)downloader didFailWithError:(NSError *)error

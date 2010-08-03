@@ -34,14 +34,14 @@
    // Download an image. Cache it in memory and on the file system.
    NSURL *imageURL = [NSURL URLWithString:@"http://farm4.static.flickr.com/3427/3192205971_0f494a3da2_o.jpg"];
    downloadCount += 1;
-   [dm downloadDataWithURL:imageURL tag:1 caching:KTDownloadManagerCachingMemory|KTDownloadManagerCachingFileSystem];
+   [dm downloadDataWithURL:imageURL tag:1 responseType:KTDownloadManagerResponseTypeData|KTDownloadManagerResponseTypeFileURL];
    
    // Download an audio file (.mp3). Since the media player has trouble
    // detecting audio file formats from memory buffers, we'll cache the
    // audio to the file system only and use the file URL for playback.
    NSURL *audioURL = [NSURL URLWithString:@"http://thecave.com/downloads/control.mp3"];
    downloadCount += 1;
-   [dm downloadDataWithURL:audioURL tag:2 caching:KTDownloadManagerCachingFileSystem];
+   [dm downloadDataWithURL:audioURL tag:2 responseType:KTDownloadManagerResponseTypeFileURL];
 }
 
 /*
@@ -97,18 +97,15 @@
 #pragma mark -
 #pragma mark KTDownloadManagerDelegate Methods
 
-- (void)downloadManagerDidFinishWithFileURL:(NSURL *)fileURL tag:(NSInteger)tag
+- (void)downloadManagerDidFinishWithResponseData:(NSDictionary *)respData tag:(NSInteger)tag
 {
-   if (tag == 2) {
-      [self playAudioFileAtURL:fileURL];
-   }
-   [self decDownloadCount];
-}
-
-- (void)downloadManagerDidFinishWithData:(NSData *)data tag:(NSInteger)tag
-{
+   NSData *data = [respData objectForKey:ktDownloadManagerResponseKeyData];
+   NSURL *fileURL = [respData objectForKey:ktDownloadManagerResponseKeyFileURL];
+   
    if (tag == 1) {
       [imageView setImage:[UIImage imageWithData:data]];
+   } else if (tag ==2 ) {
+      [self playAudioFileAtURL:fileURL];
    }
    [self decDownloadCount];
 }
