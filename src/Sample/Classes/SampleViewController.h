@@ -9,13 +9,13 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h> 
 #import <CoreAudio/CoreAudioTypes.h>
-#import "KTDownloadManagerDelegate.h"
+#import "MyDownloadManager.h"
 
 @class KTDownloadManager;
 
-@interface SampleViewController : UIViewController <KTDownloadManagerDelegate, AVAudioPlayerDelegate> {
-   KTDownloadManager *dm;
-   NSInteger downloadCount;
+@interface SampleViewController : UIViewController <MyDownloadManagerDelegate, AVAudioPlayerDelegate> {
+   MyDownloadManager *dm;
+   NSInteger downloadCount;   // Used to stop animation for activity indicator.
    UIImageView *imageView;
    UIActivityIndicatorView *activityIndicator;
 }

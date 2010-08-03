@@ -17,6 +17,8 @@ NSString * const ktDownloadManagerResponseKeyFileURL = @"KTDownloadManager.fileU
 
 @interface KTDownloadManager (KTPrivateMethods)
 - (void)broadcastDidFinishWithResponseData:(NSDictionary *)respData tag:(NSInteger)tag;
+- (void)downloader:(KTDownloader *)downloader didFinishWithData:(NSData *)data;
+- (void)downloader:(KTDownloader *)downloader didFailWithError:(NSError *)error;
 @end
 
 @implementation KTDownloadManager

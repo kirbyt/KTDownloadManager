@@ -7,7 +7,6 @@
 //
 
 #import "SampleViewController.h"
-#import "KTDownloadManager.h"
 
 @implementation SampleViewController
 
@@ -28,20 +27,20 @@
    
    downloadCount = 0;
    
-   dm = [[KTDownloadManager alloc] init];
+   dm = [[MyDownloadManager alloc] init];
    [dm setDelegate:self];
    
    // Download an image. Cache it in memory and on the file system.
-   NSURL *imageURL = [NSURL URLWithString:@"http://farm4.static.flickr.com/3427/3192205971_0f494a3da2_o.jpg"];
    downloadCount += 1;
-   [dm downloadDataWithURL:imageURL tag:1 responseType:KTDownloadManagerResponseTypeData|KTDownloadManagerResponseTypeFileURL];
+   NSURL *imageURL = [NSURL URLWithString:@"http://farm4.static.flickr.com/3427/3192205971_0f494a3da2_o.jpg"];
+   [dm downloadImageWithURL:imageURL];
    
    // Download an audio file (.mp3). Since the media player has trouble
    // detecting audio file formats from memory buffers, we'll cache the
    // audio to the file system only and use the file URL for playback.
-   NSURL *audioURL = [NSURL URLWithString:@"http://thecave.com/downloads/control.mp3"];
    downloadCount += 1;
-   [dm downloadDataWithURL:audioURL tag:2 responseType:KTDownloadManagerResponseTypeFileURL];
+   NSURL *audioURL = [NSURL URLWithString:@"http://thecave.com/downloads/control.mp3"];
+   [dm downloadAudioFileWithURL:audioURL];
 }
 
 /*
@@ -95,22 +94,21 @@
 
 
 #pragma mark -
-#pragma mark KTDownloadManagerDelegate Methods
+#pragma mark MyDownloadManagerDelegate Methods
 
-- (void)downloadManagerDidFinishWithResponseData:(NSDictionary *)respData tag:(NSInteger)tag
+- (void)myDownloadManagerImage:(UIImage *)image
 {
-   NSData *data = [respData objectForKey:ktDownloadManagerResponseKeyData];
-   NSURL *fileURL = [respData objectForKey:ktDownloadManagerResponseKeyFileURL];
-   
-   if (tag == 1) {
-      [imageView setImage:[UIImage imageWithData:data]];
-   } else if (tag ==2 ) {
-      [self playAudioFileAtURL:fileURL];
-   }
+   [imageView setImage:image];
    [self decDownloadCount];
 }
 
-- (void)downloadManagerDidFailWithError:(NSError *)error
+- (void)myDownloadManagerAudioFileURL:(NSURL *)url
+{
+   [self playAudioFileAtURL:url];
+   [self decDownloadCount];
+}
+
+- (void)myDownloadManagerDidFailWithError:(NSError *)error
 {
    NSLog(@"Error: %@", [error localizedDescription]);
 }

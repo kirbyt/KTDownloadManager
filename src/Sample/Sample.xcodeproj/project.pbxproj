@@ -19,6 +19,7 @@
 		6825FD0D1207423200E00F8B /* KTDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6825FD081207423200E00F8B /* KTDownloadManager.m */; };
 		6825FD0E1207423200E00F8B /* KTFileCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6825FD0B1207423200E00F8B /* KTFileCache.m */; };
 		6825FD4E1207460500E00F8B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6825FD4D1207460500E00F8B /* AVFoundation.framework */; };
+		6825FEA012079DA500E00F8B /* MyDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6825FE9F12079DA500E00F8B /* MyDownloadManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,8 @@
 		6825FD0A1207423200E00F8B /* KTFileCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KTFileCache.h; sourceTree = "<group>"; };
 		6825FD0B1207423200E00F8B /* KTFileCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KTFileCache.m; sourceTree = "<group>"; };
 		6825FD4D1207460500E00F8B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		6825FE9E12079DA500E00F8B /* MyDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyDownloadManager.h; sourceTree = "<group>"; };
+		6825FE9F12079DA500E00F8B /* MyDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDownloadManager.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Sample-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Sample-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -68,6 +71,8 @@
 				1D3623250D0F684500981E51 /* SampleAppDelegate.m */,
 				28D7ACF60DDB3853001CB0EB /* SampleViewController.h */,
 				28D7ACF70DDB3853001CB0EB /* SampleViewController.m */,
+				6825FE9E12079DA500E00F8B /* MyDownloadManager.h */,
+				6825FE9F12079DA500E00F8B /* MyDownloadManager.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -199,6 +204,7 @@
 				6825FD0C1207423200E00F8B /* KTDownloader.m in Sources */,
 				6825FD0D1207423200E00F8B /* KTDownloadManager.m in Sources */,
 				6825FD0E1207423200E00F8B /* KTFileCache.m in Sources */,
+				6825FEA012079DA500E00F8B /* MyDownloadManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
